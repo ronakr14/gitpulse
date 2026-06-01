@@ -1,0 +1,15 @@
+global:
+  max_parallel: 4
+
+repos:
+  - name: Github Profile
+    path: "C:\\Projects\\Personal\\ronakr14"
+    branch: main
+    backup_branch_prefix: backup
+
+    
+
+  # - name: repo2
+  #   path: D:/git/repo2
+  #   branch: develop
+  #   backup_branch_prefix: backup
