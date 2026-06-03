@@ -21,27 +21,13 @@ import os
 from requests.adapters import HTTPAdapter
 from urllib3.util.ssl_ import create_urllib3_context
 from dotenv import load_dotenv
+# import resend
+
+from notifypy import Notify
 
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s [%(levelname)s] %(message)s")
 log = logging.getLogger(__name__)
-
-
-# ---------------------------------------------------------------------------
-# Requests session — certifi CA bundle fixes SSL on Windows Poetry venvs
-# ---------------------------------------------------------------------------
-
-class _CertifiAdapter(HTTPAdapter):
-    """Force requests to use certifi's CA bundle regardless of OS trust store."""
-    def init_poolmanager(self, *args, **kwargs):
-        ctx = create_urllib3_context()
-        ctx.load_verify_locations(certifi.where())
-        kwargs["ssl_context"] = ctx
-        super().init_poolmanager(*args, **kwargs)
-
-
-_session = requests.Session()
-_session.mount("https://", _CertifiAdapter())
 
 # ---------------------------------------------------------------------------
 # Config
@@ -53,19 +39,21 @@ def load_config(path: str = "config.yaml") -> dict:
 
 
 # ---------------------------------------------------------------------------
-# Telegram  (plain requests — no SDK version dependency)
+# Resend wrapper
 # ---------------------------------------------------------------------------
 
-def send_telegram(bot_token: str, chat_id: str, message: str) -> None:
-    url = f"https://api.telegram.org/bot{bot_token}/sendMessage"
-    try:
-        resp = _session.post(url, json={"chat_id": chat_id, "text": message}, timeout=10)
-        # resp = requests.post(url, json={"chat_id": chat_id, "text": message}, timeout=10)
-        resp.raise_for_status()
-        # print(resp.raise_for_status())
-    except requests.RequestException as e:
-        log.warning("Telegram send failed: %s", e)
+# def send_notification():
+#     resend.api_key = os.environ["RESEND_API_KEY"]
 
+#     params: resend.Emails.SendParams = {
+#         "from": "Acme <onboarding@resend.dev>",
+#         "to": ["delivered@resend.dev"],
+#         "subject": "hello world",
+#         "html": "<strong>it works!</strong>",
+#     }
+
+#     email = resend.Emails.send(params)
+#     print(email)
 
 # ---------------------------------------------------------------------------
 # Retry wrapper
@@ -100,8 +88,8 @@ def sync_repo(repo_cfg: dict, state: dict, bot_token: str, chat_id: str) -> dict
     branch        = repo_cfg["branch"]
     backup_prefix = repo_cfg.get("backup_branch_prefix", "backup")
 
-    def tg(msg: str) -> None:
-        send_telegram(bot_token, chat_id, msg)
+    # def tg(msg: str) -> None:
+    #     send_telegram(bot_token, chat_id, msg)
 
     try:
         repo = Repo(path)

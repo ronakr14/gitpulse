@@ -3,7 +3,7 @@ global:
 
 repos:
   - name: Github Profile
-    path: "C:\\Projects\\Personal\\ronakr14"
+    path: "C:\\Project\\Personal\\ronakr14"
     branch: main
     backup_branch_prefix: backup
 
