@@ -2,9 +2,9 @@ global:
   max_parallel: 4
 
 repos:
-  - name: Github Profile
-    path: "C:\\Project\\Personal\\ronakr14"
-    branch: main
+  - name: HolistiQ
+    path: "C:\\Projects\\Personal\\HolistiQ"
+    branch: master
     backup_branch_prefix: backup
 
     
